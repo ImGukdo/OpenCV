@@ -12,8 +12,8 @@ void mask_setTo() {
 		cerr << "Image load failed" << endl;
 		return;
 	}
-	// ¸¶½ºÅ©´Â ´ë»óÇà·Ä°ú Å©±â°¡ °°¾Æ¾ßÇÑ´Ù.
-	// ¸¶½ºÅ©ÀÇ 0ÀÌ ¾Æ´ÑºÎºÐ¿¡¸¸ value°ªÀÌ ¼³Á¤µÈ´Ù.
+	// ë§ˆìŠ¤í¬ëŠ” ëŒ€ìƒí–‰ë ¬ê³¼ í¬ê¸°ê°€ ê°™ì•„ì•¼í•œë‹¤.
+	// ë§ˆìŠ¤í¬ì˜ 0ì´ ì•„ë‹Œë¶€ë¶„ì—ë§Œ valueê°’ì´ ì„¤ì •ëœë‹¤.
 	src.setTo(Scalar(0, 255, 255), mask);
 
 	imshow("src", src);
@@ -32,7 +32,7 @@ void mask_copyTo() {
 		cerr << "Image load failed" << endl;
 		return;
 	}
-	// mask ¿µ»ó¿¡¼­ 0ÀÌ ¾Æ´Ñ ºÎºÐ¿¡¼­¸¸ scr ¿µ»ó ÇÈ¼¿°ªÀ» dst·Î º¹»ç
+	// mask ì˜ìƒì—ì„œ 0ì´ ì•„ë‹Œ ë¶€ë¶„ì—ì„œë§Œ scr ì˜ìƒ í”½ì…€ê°’ì„ dstë¡œ ë³µì‚¬
 	src.copyTo(dst, mask);
 
 	imshow("dst", dst);
@@ -50,37 +50,42 @@ void time_inverse() {
 	Mat dst(src.rows, src.cols, src.type());
 
 	TickMeter tm; 
-	tm.start();  // ½Ã°£ ÃøÁ¤ ½ÃÀÛ
+	tm.start();  // ì‹œê°„ ì¸¡ì • ì‹œìž‘
 
-	// ¿µ»óÀÇ ¸ðµç ÇÈ¼¿À» ¹ÝÀü
+	// ì˜ìƒì˜ ëª¨ë“  í”½ì…€ì„ ë°˜ì „
 	for (int j = 0; j < src.rows; ++j) {
 		for (int i = 0; i < src.cols; ++i) {
 			dst.at<uchar>(j, i) = 255 - src.at<uchar>(j, i);
 		}
 	}
 
-	tm.stop();  // ½Ã°£ ÃøÁ¤ Á¾·á
+	tm.stop();  // ì‹œê°„ ì¸¡ì • ì¢…ë£Œ
 	cout << "Image inverse took " << tm.getTimeMilli() << "ms" << endl;
 }
 
 void func() {
 	Mat img = imread("./images/lenna.bmp", IMREAD_GRAYSCALE);
 
-	cout << "sum : " << (int)sum(img)[0] << endl;  // °¢ Ã¤³ÎÀÇ ÇÕ
-	cout << "mean : " << (int)mean(img)[0] << endl;  // °¢ Ã¤³ÎÀÇ Æò±Õ
+	cout << "sum : " << (int)sum(img)[0] << endl;  // ê° ì±„ë„ì˜ í•©
+	cout << "mean : " << (int)mean(img)[0] << endl;  // ê° ì±„ë„ì˜ í‰ê· 
 
-	// ´ÜÀÏ Ã¤³Î ¿µ»ó¸¸ °¡´É, ÃÖ¼Ú°ª°ú À§Ä¡, ÃÖ´ñ°ª°ú À§Ä¡ ±¸ÇÏ±â
+	// ë‹¨ì¼ ì±„ë„ ì˜ìƒë§Œ ê°€ëŠ¥, ìµœì†Ÿê°’ê³¼ ìœ„ì¹˜, ìµœëŒ“ê°’ê³¼ ìœ„ì¹˜ êµ¬í•˜ê¸°
 	double minVal, maxVal;
 	Point minLoc, maxLoc;
 	minMaxLoc(img, &minVal, &maxVal, &minLoc, &maxLoc);
 	cout << "minVal : " << minVal << " at " << minLoc << endl;
 	cout << "maxVal : " << maxVal << " at " << maxLoc << endl;
 
-	// ¹Ý¿Ã¸², ¼Ò¼öÁ¡ ¾Æ·¡°¡ 0.5ÀÎ °æ¿ì °¡±î¿î Â¦¼ö·Î ¹Ý¿Ã¸² ¼öÇà
+	// ë°˜ì˜¬ë¦¼, ì†Œìˆ˜ì  ì•„ëž˜ê°€ 0.5ì¸ ê²½ìš° ê°€ê¹Œìš´ ì§ìˆ˜ë¡œ ë°˜ì˜¬ë¦¼ ìˆ˜í–‰
 	cout << "cvRound(2.5) : " << cvRound(2.5) << endl;
 	cout << "cvRound(2.51) : " << cvRound(2.51) << endl;
 	cout << "cvRound(3.4999) : " << cvRound(3.4999) << endl;
 	cout << "cvRound(3.5) : " << cvRound(3.5) << endl;
+	
+	// ì»¬ëŸ¬ë³€í™˜ í•¨ìˆ˜
+	Mat img2 = imread("./images/lenna.bmp", IMREAD_COLOR);
+	Mat img3;
+	cvtColor(img2, img3, COLOR_BGR2GRAY);  // 3ì±„ë„ ì»¬ëŸ¬ì˜ìƒì„ ê·¸ë ˆì´ìŠ¤ì¼€ì¼ë¡œ ë³€í™˜
 }
 
 int main(void) {
