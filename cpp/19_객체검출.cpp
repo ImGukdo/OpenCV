@@ -4,7 +4,7 @@
 using namespace std;
 using namespace cv;
 
-// ÅÛÇÃ¸´ ¸ÅÄª
+// í…œí”Œë¦¿ ë§¤ì¹­
 void template_matching() {
 	Mat img = imread("./images/circuit.bmp");
 	Mat templ = imread("./images/crystal.bmp");
@@ -13,25 +13,25 @@ void template_matching() {
 		cerr << "Image load failed" << endl;
 		return;
 	}
-	// ¿µ»ó¿¡ Á¶¸í°ú ÀâÀ½À» Ãß°¡
-	img += Scalar(50, 50, 50);  // ¹à±â 50 Áõ°¡
+	// ì˜ìƒì— ì¡°ëª…ê³¼ ì¡ìŒì„ ì¶”ê°€
+	img += Scalar(50, 50, 50);  // ë°ê¸° 50 ì¦ê°€
 	Mat noise(img.size(), CV_32SC3);
 	randn(noise, 0, 10);
-	add(img, noise, img, Mat(), CV_8UC3);  // Ç¥ÁØÆíÂ÷°¡ 10ÀÎ °¡¿ì½Ã¾È ÀâÀ½ Ãß°¡
+	add(img, noise, img, Mat(), CV_8UC3);  // í‘œì¤€í¸ì°¨ê°€ 10ì¸ ê°€ìš°ì‹œì•ˆ ì¡ìŒ ì¶”ê°€
 
 	Mat res, res_norm;  
-	// Á¤±ÔÈ­µÈ »ó°ü°è¼ö ¸ÅÄª ¹æ¹ıÀ¸ »ç¿ëÇÏ¿© ÅÛÇÃ¸´ ¸ÅÄª ¼öÇà
+	// ì •ê·œí™”ëœ ìƒê´€ê³„ìˆ˜ ë§¤ì¹­ ë°©ë²•ìœ¼ ì‚¬ìš©í•˜ì—¬ í…œí”Œë¦¿ ë§¤ì¹­ ìˆ˜í–‰
 	matchTemplate(img, templ, res, TM_CCOEFF_NORMED);
-	// ÅÛÇÃ¸´ ¸ÅÄª °á°ú Çà·ÄÀÇ ¸ğµç ¿ø¼Ò°ªÀ» 0~255 »çÀÌ·Î Á¤±ÔÈ­ ÇÏ°í CV_8U Å¸ÀÔÀ¸·Î º¯È¯
+	// í…œí”Œë¦¿ ë§¤ì¹­ ê²°ê³¼ í–‰ë ¬ì˜ ëª¨ë“  ì›ì†Œê°’ì„ 0~255 ì‚¬ì´ë¡œ ì •ê·œí™” í•˜ê³  CV_8U íƒ€ì…ìœ¼ë¡œ ë³€í™˜
 	normalize(res, res_norm, 0, 255, NORM_MINMAX, CV_8U);
 
-	// ÃÖ´ñ°ª°ú ÃÖ´ë°ªÀÇ À§Ä¡ Ã£±â
+	// ìµœëŒ“ê°’ê³¼ ìµœëŒ€ê°’ì˜ ìœ„ì¹˜ ì°¾ê¸°
 	double maxv;
 	Point maxloc;
 	minMaxLoc(res, 0, &maxv, 0, &maxloc);
 	cout << "maxv : " << maxv << endl;
 
-	// img ¿µ»ó¿¡¼­ ÅÛÇÃ¸´ ¸ÅÄªÀ¸·Î Ã£Àº À§Ä¡¸¦ »¡°£»ö »ç°¢ÇüÀ¸·Î Ç¥½Ã
+	// img ì˜ìƒì—ì„œ í…œí”Œë¦¿ ë§¤ì¹­ìœ¼ë¡œ ì°¾ì€ ìœ„ì¹˜ë¥¼ ë¹¨ê°„ìƒ‰ ì‚¬ê°í˜•ìœ¼ë¡œ í‘œì‹œ
 	rectangle(img, Rect(maxloc, templ.size()), Scalar(0, 0, 255), 2);
 	imshow("img", img);
 	imshow("templ", templ);
@@ -40,7 +40,7 @@ void template_matching() {
 }
 
 
-// ¾ó±¼ °ËÃâ
+// ì–¼êµ´ ê²€ì¶œ
 void detect_face() {
 	Mat src = imread("./images/kids.png");
 
@@ -49,16 +49,16 @@ void detect_face() {
 		return;
 	}
 	
-	// CascadeClassifier °´Ã¼¸¦ »ı¼ºÇÏ°í haarcascade_frontalface_default.xml ÆÄÀÏÀ» ºÒ·¯¿È
+	// CascadeClassifier ê°ì²´ë¥¼ ìƒì„±í•˜ê³  haarcascade_frontalface_default.xml íŒŒì¼ì„ ë¶ˆëŸ¬ì˜´
 	CascadeClassifier classifier("C:/opencv/build/etc/haarcascades/haarcascade_frontalface_default.xml");
 	if (classifier.empty()) {
 		cerr << "XML load failed" << endl;
 		return;
 	}
-	// src ¿µ»ó¿¡¼­ ¾ó±¼À» °ËÃâÇÏ¿© »ç°¢Çü Á¤º¸¸¦ ÀúÀå
+	// src ì˜ìƒì—ì„œ ì–¼êµ´ì„ ê²€ì¶œí•˜ì—¬ ì‚¬ê°í˜• ì •ë³´ë¥¼ ì €ì¥
 	vector<Rect> faces;
 	classifier.detectMultiScale(src, faces);
-	// °ËÃâµÈ ¾ó±¼À» º¸¶ó»ö »ç°¢ÇüÀ¸·Î ±×¸²
+	// ê²€ì¶œëœ ì–¼êµ´ì„ ë³´ë¼ìƒ‰ ì‚¬ê°í˜•ìœ¼ë¡œ ê·¸ë¦¼
 	for (Rect rc : faces) {
 		rectangle(src, rc, Scalar(255, 0, 255), 2);
 	}
@@ -69,7 +69,7 @@ void detect_face() {
 }
 
 
-// ´« °ËÃâ
+// ëˆˆ ê²€ì¶œ
 void detect_eyes() {
 	Mat src = imread("./images/kids.png");
 
@@ -78,7 +78,7 @@ void detect_eyes() {
 		return;
 	}
 
-	// CascadeClassifier °´Ã¼¸¦ »ı¼ºÇÏ°í xml ÆÄÀÏÀ» ºÒ·¯¿Â´Ù
+	// CascadeClassifier ê°ì²´ë¥¼ ìƒì„±í•˜ê³  xml íŒŒì¼ì„ ë¶ˆëŸ¬ì˜¨ë‹¤
 	CascadeClassifier face_classifier("C:/opencv/build/etc/haarcascades/haarcascade_frontalface_default.xml");
 	CascadeClassifier eye_classifier("C:/opencv/build/etc/haarcascades/haarcascade_eye.xml");
 
@@ -86,10 +86,10 @@ void detect_eyes() {
 		cerr << "xml load failed" << endl;
 		return;
 	}
-	// src ¿µ»ó¿¡¼­ ¾ó±¼À» °ËÃâ
+	// src ì˜ìƒì—ì„œ ì–¼êµ´ì„ ê²€ì¶œ
 	vector<Rect> faces;
 	face_classifier.detectMultiScale(src, faces);
-	// °ËÃâµÈ ¾ó±¼¿µ¿ª¿¡¼­ ´« °ËÃâ
+	// ê²€ì¶œëœ ì–¼êµ´ì˜ì—­ì—ì„œ ëˆˆ ê²€ì¶œ
 	for (Rect face : faces) {
 		rectangle(src, face, Scalar(255, 0, 255), 2);
 
@@ -108,9 +108,9 @@ void detect_eyes() {
 }
 
 
-// º¸ÇàÀÚ °ËÃâ
+// ë³´í–‰ì ê²€ì¶œ
 void detect_people() {
-	// vtest.avi. ÆÄÀÏÀ» ºÒ·¯¿È
+	// vtest.avi. íŒŒì¼ì„ ë¶ˆëŸ¬ì˜´
 	VideoCapture cap("./images/vtest.avi");
 
 	if (!cap.isOpened()) {
@@ -118,8 +118,8 @@ void detect_people() {
 		return;
 	}
 	
-	HOGDescriptor hog;  // HOGDescriptor °´Ã¼ »ı¼º
-	// º¸ÇàÀÚ °ËÃâÀ» À§ÇÑ ºĞ·ù±â °è¼ö¸¦ SVM ºĞ·ù±â ÇÔ¼ö¿¡ µî·Ï
+	HOGDescriptor hog;  // HOGDescriptor ê°ì²´ ìƒì„±
+	// ë³´í–‰ì ê²€ì¶œì„ ìœ„í•œ ë¶„ë¥˜ê¸° ê³„ìˆ˜ë¥¼ SVM ë¶„ë¥˜ê¸° í•¨ìˆ˜ì— ë“±ë¡
 	hog.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
 
 	Mat frame;
@@ -127,10 +127,10 @@ void detect_people() {
 		cap >> frame;
 		if (frame.empty())
 			break;
-		// ¸Å ÇÁ·¹ÀÓ¸¶´Ù º¸ÇàÀÚ °ËÃâ ¼öÇà
+		// ë§¤ í”„ë ˆì„ë§ˆë‹¤ ë³´í–‰ì ê²€ì¶œ ìˆ˜í–‰
 		vector<Rect> detected;
 		hog.detectMultiScale(frame, detected);
-		// °ËÃâµÈ »ç°¢Çü Á¤º¸¸¦ ±×¸²
+		// ê²€ì¶œëœ ì‚¬ê°í˜• ì •ë³´ë¥¼ ê·¸ë¦¼
 		for (Rect r : detected) {
 			Scalar c = Scalar(rand() % 256, rand() % 256, rand() % 256);
 			rectangle(frame, r, c, 3);
@@ -143,6 +143,7 @@ void detect_people() {
 }
 
 
+// QRì½”ë“œ ê²€ì¶œ ë° í•´ì„
 void decode_qrcode() {
 	VideoCapture cap(0);
 
@@ -151,7 +152,7 @@ void decode_qrcode() {
 		return;
 	}
 
-	QRCodeDetector detector;  // QRCodeDetector °´Ã¼ »ı¼º
+	QRCodeDetector detector;  // QRCodeDetector ê°ì²´ ìƒì„±
 
 	Mat frame;
 
@@ -162,10 +163,10 @@ void decode_qrcode() {
 
 		vector<Point> points;
 
-		// QRÄÚµå °ËÃâ ¹× ÇØ¼®
+		// QRì½”ë“œ ê²€ì¶œ ë° í•´ì„
 		String info = detector.detectAndDecode(frame, points);
 
-		 // QRÄÚµå¸¦ »¡°£»ö »ç°¢ÇüÀ¸·Î ±×¸®°í ÇØ¼®µÈ ¹®ÀÚ¿­À» Ãâ·Â 
+		 // QRì½”ë“œë¥¼ ë¹¨ê°„ìƒ‰ ì‚¬ê°í˜•ìœ¼ë¡œ ê·¸ë¦¬ê³  í•´ì„ëœ ë¬¸ìì—´ì„ ì¶œë ¥ 
 		if (!info.empty()) {
 			polylines(frame, points, true, Scalar(0, 0, 255), 2);
 			putText(frame, info, Point(10, 30), FONT_HERSHEY_DUPLEX, 1, Scalar(0, 0, 255));
